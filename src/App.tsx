@@ -42,10 +42,18 @@ export default function App() {
       if (response) {
         setMessages((prev) => [...prev, { role: "model", text: response }]);
       }
-    } catch (error) {
+    } catch (error: any) {
+      let errorMessage = "I'm sorry, I encountered a little hiccup. Could you try again? 🙏";
+      
+      if (error.message === "API_KEY_MISSING") {
+        errorMessage = "It looks like my API key is missing. Please check the environment settings! 🔑";
+      } else if (error.message === "PERMISSION_DENIED") {
+        errorMessage = "I don't have permission to use this model right now. Maybe try again in a moment? 🔒";
+      }
+
       setMessages((prev) => [
         ...prev,
-        { role: "model", text: "I'm sorry, I encountered a little hiccup. Could you try again? 🙏" }
+        { role: "model", text: errorMessage }
       ]);
     } finally {
       setIsLoading(false);
